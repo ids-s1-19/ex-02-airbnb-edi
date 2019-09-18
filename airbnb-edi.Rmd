@@ -1,0 +1,75 @@
+---
+title: "Edinburgh Inside Airbnb"
+date: "9/18/2019"
+output: github_document
+---
+
+Recent development in Edinburgh regarding the growth of Airbnb and its impact on the housing market means a better understanding of the Airbnb listings is needed. Using data provided by Airbnb, we can explore how Airbnb availability and prices vary by neighborhood.
+
+The data come from the [Kaggle database](https://www.kaggle.com/thoroc/edinburgh-inside-airbnb/version/2).
+
+We'll use the **tidyverse** and the **ggridges** packages for this analysis.
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(ggridges)
+```
+
+The dataset we'll be working with is called `listings.csv`.
+
+```{r load-data, message=FALSE}
+listings <- read_csv("data/listings.csv")
+```
+
+## Airbnb listing prices
+
+There are `r nrow(listings)` observations in this dataset. We'll start by visualizing the price data.
+
+```{r overall-hist, fig.height=3}
+ggplot(data = listings, mapping = aes(x = price)) +
+  geom_histogram(binwidth = 50) +
+  labs(
+    title = "Daily prices of Airbnb listings in Edinbugh",
+    x = "Price, in $"
+    )
+```
+
+There appears to be some really expensive listings! What are they?
+
+```{r view-expensive}
+listings %>%
+  arrange(desc(price)) %>%
+  select(price, neighbourhood, accommodates, listing_url)
+```
+
+## Prices by neighborhood
+
+Next we plot the price distributions by neighborhood. The following shows 
+density plots for each neighbourhood. This representation is also called 
+a ridge plot.
+
+```{r neighbourhood-ridge, fig.height=5, message=FALSE}
+ggplot(data = listings, 
+       mapping = aes(x = price, y = neighbourhood, fill = neighbourhood)) +
+  geom_density_ridges(alpha = 0.7, scale = 4) +
+  guides(fill = "none") +
+  labs(
+    title = "Daily prices of Airbnb listings in Edinbugh, by neighbourhood",
+    x = "Price, in $"
+    )
+```
+
+We can also take a look at box plots.
+
+```{r neighbourhood-box}
+
+```
+
+And calculate summary statistics like number of listings, and mean and 
+median prices by neighborhood.
+
+```{r neighbourhood-median}
+
+```
+
+
